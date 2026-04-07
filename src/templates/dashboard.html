@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Dashboard de Rendimiento - MatchApp</h2>
+    
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">Análisis de Goleadores</div>
+                <div class="card-body">
+                    <img src="{{ url_for('static', filename='img/goles_player.png') }}" class="img-fluid" alt="Gráfico de goles">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">Tabla de Datos Procesados</div>
+                <div class="card-body" style="height: 400px; overflow-y: auto;">
+                    {{ tabla_html|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
