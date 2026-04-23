@@ -14,10 +14,13 @@ def dashboard():
     try:
         # 1. Llamamos a la función de analítica que procesa el CSV en data/
         # y genera los gráficos en static/img/
-        tabla_html = procesar_y_graficar()
+        datos_por_filtro, anos_unicos = procesar_y_graficar()
         
-        # 2. Renderizamos el template pasando la tabla generada por Pandas
-        return render_template('dashboard.html', tabla_html=tabla_html)
+        # 2. Renderizamos el template pasando los datos organizados por liga y año
+        return render_template('dashboard.html', 
+                             datos_por_filtro=datos_por_filtro, 
+                             anos_unicos=anos_unicos,
+                             ano_inicial=anos_unicos[0] if anos_unicos else None)
     
     except FileNotFoundError:
         # Gestión de errores  

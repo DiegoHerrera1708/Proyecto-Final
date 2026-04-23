@@ -1,27 +1,232 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container">
-    <h2 class="mb-4">Dashboard de Rendimiento - MatchApp</h2>
+<div class="container-fluid mt-4">
+    <h2 class="mb-4 fw-bold">Dashboard de Estadísticas de Jugadores</h2>
     
-    <div class="row">
-        <div class="col-md-7">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">Análisis de Goleadores</div>
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <!-- Filtro de Años -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
                 <div class="card-body">
-                    <img src="{{ url_for('static', filename='img/goles_player.png') }}" class="img-fluid" alt="Gráfico de goles">
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-5">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-dark text-white">Tabla de Datos Procesados</div>
-                <div class="card-body" style="height: 400px; overflow-y: auto;">
-                    {{ tabla_html|safe }}
+                    <label for="selectorAno" class="form-label fw-bold">Filtrar por Año/Temporada:</label>
+                    <select id="selectorAno" class="form-select" onchange="actualizarFiltros()">
+                        {% for ano in anos_unicos %}
+                            <option value="{{ ano }}" {% if ano == ano_inicial %}selected{% endif %}>
+                                {{ ano }}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Información de la tabla -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p class="mb-0"><strong>Total de Jugadores:</strong> <span id="totalJugadores">0</span></p>
+                    <p class="mb-0"><strong>Página:</strong> <span id="paginaActual">1</span> de <span id="totalPaginas">1</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tabla de Datos -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <i class="fas fa-table"></i> Estadísticas de Jugadores
+                </div>
+                <div class="card-body" style="overflow-x: auto;">
+                    <table class="table table-striped table-hover" id="tablaJugadores">
+                        <thead>
+                            <tr>
+                                <th>Jugador</th>
+                                <th>Equipo</th>
+                                <th>Partidos Jugados</th>
+                                <th>Canastas Tiradas</th>
+                                <th>Encestadas</th>
+                                <th>3 Puntos</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTabla">
+                            <!-- Se llena con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Paginación -->
+    <div class="row mt-4 mb-4">
+        <div class="col-lg-12">
+            <nav aria-label="Paginación">
+                <ul class="pagination justify-content-center" id="paginacion">
+                    <!-- Se llena con JavaScript -->
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>
+
+<style>
+    .table {
+        font-size: 0.95rem;
+        margin-bottom: 0;
+    }
+    .table thead {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+    .pagination {
+        margin: 0;
+    }
+    .page-link {
+        color: #0d6efd;
+    }
+    .page-link:hover {
+        color: #0b5ed7;
+        background-color: #e9ecef;
+    }
+    .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+</style>
+
+<script>
+    // Datos globales
+    const datosCompletos = {{ datos_por_filtro | tojson }};
+    const anos_disponibles = {{ anos_unicos | tojson }};
+    let anoActual = {{ ano_inicial | tojson }};
+    let paginaActual = 1;
+    const ITEMS_POR_PAGINA = 20;
+    
+    // Inicializar tabla al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        actualizarFiltros();
+    });
+    
+    function actualizarFiltros() {
+        anoActual = parseInt(document.getElementById('selectorAno').value);
+        paginaActual = 1;
+        mostrarDatos(1);
+    }
+    
+    function mostrarDatos(pagina) {
+        const datosCompiladosTotal = [];
+        for (const liga in datosCompletos) {
+            if (datosCompletos[liga][anoActual]) {
+                datosCompiladosTotal.push(...datosCompletos[liga][anoActual].datos);
+            }
+        }
+
+        totalPaginas = Math.ceil(datosCompiladosTotal.length / ITEMS_POR_PAGINA);
+        const totalJugadores = datosCompiladosTotal.length;
+        // Validar página
+        if (pagina > totalPaginas || pagina < 1) {
+            pagina = 1;
+        }
+        paginaActual = pagina;
+        
+        // Actualizar información
+        document.getElementById('totalJugadores').textContent = totalJugadores;
+        document.getElementById('paginaActual').textContent = pagina;
+        document.getElementById('totalPaginas').textContent = totalPaginas;
+        
+        // Calcular índices
+        const inicio = (pagina - 1) * ITEMS_POR_PAGINA;
+        const fin = inicio + ITEMS_POR_PAGINA;
+        const datosPagina = datosCompiladosTotal.slice(inicio, fin);
+        
+        // Llenar tabla
+        const tbody = document.getElementById('cuerpoTabla');
+        tbody.innerHTML = '';
+        
+        datosPagina.forEach(fila => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${fila.Jugador}</td>
+                <td>${fila.Equipo}</td>
+                <td class="text-center">${Math.round(fila['Partidos Jugados'])}</td>
+                <td class="text-center">${Math.round(fila['Canastas Tiradas'])}</td>
+                <td class="text-center">${Math.round(fila.Encestadas)}</td>
+                <td class="text-center">${Math.round(fila['3 Puntos'])}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+        
+        // Generar paginación
+        generarPaginacion(totalPaginas, pagina);
+    }
+    
+    function generarPaginacion(totalPaginas, paginaActual) {
+        const paginacion = document.getElementById('paginacion');
+        paginacion.innerHTML = '';
+        
+        // Botón anterior
+        const liAnterior = document.createElement('li');
+        liAnterior.className = 'page-item ' + (paginaActual === 1 ? 'disabled' : '');
+        liAnterior.innerHTML = `<a class="page-link" href="#" onclick="cambiarPagina(${paginaActual - 1}); return false;">Anterior</a>`;
+        paginacion.appendChild(liAnterior);
+        
+        // Números de página
+        const inicio = Math.max(1, paginaActual - 2);
+        const fin = Math.min(totalPaginas, paginaActual + 2);
+        
+        if (inicio > 1) {
+            const li = document.createElement('li');
+            li.className = 'page-item';
+            li.innerHTML = `<a class="page-link" href="#" onclick="cambiarPagina(1); return false;">1</a>`;
+            paginacion.appendChild(li);
+            
+            if (inicio > 2) {
+                const liPuntos = document.createElement('li');
+                liPuntos.className = 'page-item disabled';
+                liPuntos.innerHTML = `<span class="page-link">...</span>`;
+                paginacion.appendChild(liPuntos);
+            }
+        }
+        
+        for (let i = inicio; i <= fin; i++) {
+            const li = document.createElement('li');
+            li.className = 'page-item ' + (i === paginaActual ? 'active' : '');
+            li.innerHTML = `<a class="page-link" href="#" onclick="cambiarPagina(${i}); return false;">${i}</a>`;
+            paginacion.appendChild(li);
+        }
+        
+        if (fin < totalPaginas) {
+            if (fin < totalPaginas - 1) {
+                const liPuntos = document.createElement('li');
+                liPuntos.className = 'page-item disabled';
+                liPuntos.innerHTML = `<span class="page-link">...</span>`;
+                paginacion.appendChild(liPuntos);
+            }
+            
+            const li = document.createElement('li');
+            li.className = 'page-item';
+            li.innerHTML = `<a class="page-link" href="#" onclick="cambiarPagina(${totalPaginas}); return false;">${totalPaginas}</a>`;
+            paginacion.appendChild(li);
+        }
+        
+        // Botón siguiente
+        const liSiguiente = document.createElement('li');
+        liSiguiente.className = 'page-item ' + (paginaActual === totalPaginas ? 'disabled' : '');
+        liSiguiente.innerHTML = `<a class="page-link" href="#" onclick="cambiarPagina(${paginaActual + 1}); return false;">Siguiente</a>`;
+        paginacion.appendChild(liSiguiente);
+    }
+    
+    function cambiarPagina(nuevaPagina) {
+        mostrarDatos(nuevaPagina);
+    }
+</script>
 {% endblock %}
