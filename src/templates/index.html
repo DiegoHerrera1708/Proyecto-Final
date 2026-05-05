@@ -2,11 +2,46 @@
 
 {% block title %}Inicio{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+{% endblock %}
+
 {% block content %}
-<div class="p-5 mb-4 bg-light rounded-3 shadow">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Análisis de Datos Deportivos</h1>
-        <a href="/dashboard" class="btn btn-primary btn-lg">Ver Estadísticas</a>
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">
+            <i class="fas fa-chart-line me-2"></i>Análisis de Datos Deportivos
+        </h1>
+        <p class="hero-subtitle">Explora estadísticas detalladas de jugadores y equipos con visualizaciones interactivas</p>
+        <a href="/dashboard" class="btn-hero">
+            <i class="fas fa-arrow-right"></i> Ver Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-table"></i>
+        </div>
+        <h5 class="feature-title">Datos Completos</h5>
+        <p class="feature-description">Accede a todas las estadísticas básicas de jugadores de forma organizada y fácil de consultar</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-chart-bar"></i>
+        </div>
+        <h5 class="feature-title">Métricas Avanzadas</h5>
+        <p class="feature-description">Analiza métricas de rendimiento complejas y porcentajes de eficiencia detallados</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-chart-scatter"></i>
+        </div>
+        <h5 class="feature-title">Gráficos Interactivos</h5>
+        <p class="feature-description">Visualiza correlaciones y patrones con gráficos dinámicos e interactivos</p>
     </div>
 </div>
 {% endblock %}

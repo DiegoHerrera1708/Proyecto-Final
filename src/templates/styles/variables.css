@@ -1,0 +1,50 @@
+/* Variables Globales */
+:root {
+    /* Colores */
+    --primary-color: #1e3c72;
+    --secondary-color: #2a5298;
+    --accent-color: #00d4ff;
+    --success-color: #10b981;
+    --info-color: #3b82f6;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --light-bg: #f8fafc;
+    --dark-text: #1f2937;
+    --gray-text: #6b7280;
+    --border-color: #e5e7eb;
+    --card-bg: #ffffff;
+
+    /* Espaciado */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 2.5rem;
+    --spacing-3xl: 3rem;
+
+    /* Border Radius */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+
+    /* Sombras */
+    --shadow-sm: 0 2px 8px rgba(30, 60, 114, 0.08);
+    --shadow-md: 0 4px 12px rgba(30, 60, 114, 0.12);
+    --shadow-lg: 0 8px 16px rgba(30, 60, 114, 0.15);
+    --shadow-xl: 0 12px 24px rgba(30, 60, 114, 0.2);
+
+    /* Tipografía */
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-sm: 0.85rem;
+    --font-size-base: 0.95rem;
+    --font-size-lg: 1rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 2.2rem;
+    --font-size-4xl: 3.5rem;
+
+    /* Transiciones */
+    --transition: all 0.3s ease;
+}

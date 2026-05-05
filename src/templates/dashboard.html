@@ -1,253 +1,212 @@
 {% extends "layout.html" %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}">
+{% endblock %}
+
 {% block content %}
-<div class="container-fluid mt-4">
-    <h2 class="mb-4 fw-bold">Dashboard de Estadísticas de Jugadores</h2>
+
+<div class="dashboard-header">
+    <i class="fas fa-chart-bar"></i>
+    <h1>Dashboard de Estadísticas de Jugadores</h1>
+</div>
+
+<!-- Filtros -->
+<div class="filter-card">
+    <label for="selectorAno" class="form-label">
+        <i class="fas fa-calendar-alt me-2"></i>Filtrar por Año/Temporada:
+    </label>
+    <select id="selectorAno" class="form-select" onchange="actualizarFiltros()">
+        {% for ano in anos_unicos %}
+            <option value="{{ ano }}" {% if ano == ano_inicial %}selected{% endif %}>
+                {{ ano }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<!-- Navegación con Pestañas -->
+<ul class="nav nav-tabs" id="pestañas" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="pestaña-datos-tab" data-bs-toggle="tab" data-bs-target="#pestaña-datos" type="button" role="tab" aria-controls="pestaña-datos" aria-selected="true">
+            <i class="fas fa-table"></i> Datos Básicos
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pestaña-metricas-tab" data-bs-toggle="tab" data-bs-target="#pestaña-metricas" type="button" role="tab" aria-controls="pestaña-metricas" aria-selected="false">
+            <i class="fas fa-chart-bar"></i> Métricas Avanzadas
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pestaña-graficos-tab" data-bs-toggle="tab" data-bs-target="#pestaña-graficos" type="button" role="tab" aria-controls="pestaña-graficos" aria-selected="false">
+            <i class="fas fa-chart-line"></i> Gráficos
+        </button>
+    </li>
+</ul>
+
+<!-- Contenido de Pestañas -->
+<div class="tab-content" id="contenidoPestañas" style="margin-top: 2rem;">
     
-    <!-- Filtros -->
-    <div class="row mb-4">
-        <!-- Filtro de Años -->
-        <div class="col-lg-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <label for="selectorAno" class="form-label fw-bold">Filtrar por Año/Temporada:</label>
-                    <select id="selectorAno" class="form-select" onchange="actualizarFiltros()">
-                        {% for ano in anos_unicos %}
-                            <option value="{{ ano }}" {% if ano == ano_inicial %}selected{% endif %}>
-                                {{ ano }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
+    <!-- PESTAÑA 1: DATOS BÁSICOS -->
+    <div class="tab-pane fade show active" id="pestaña-datos" role="tabpanel" aria-labelledby="pestaña-datos-tab">
+        <!-- Información de la tabla -->
+        <div class="info-card">
+            <div>
+                <p><strong>Total de Jugadores:</strong> <span class="value" id="totalJugadores">0</span></p>
+                <p><strong>Página:</strong> <span id="paginaActual">1</span> de <span id="totalPaginas">1</span></p>
             </div>
         </div>
-    </div>
-    
-    <!-- Navegación con Pestañas -->
-    <div class="row mb-4">
-        <div class="col-lg-12">
-            <ul class="nav nav-tabs" id="pestañas" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="pestaña-datos-tab" data-bs-toggle="tab" data-bs-target="#pestaña-datos" type="button" role="tab" aria-controls="pestaña-datos" aria-selected="true">
-                        <i class="fas fa-table"></i> Datos Básicos
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pestaña-metricas-tab" data-bs-toggle="tab" data-bs-target="#pestaña-metricas" type="button" role="tab" aria-controls="pestaña-metricas" aria-selected="false">
-                        <i class="fas fa-chart-bar"></i> Métricas Avanzadas
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pestaña-graficos-tab" data-bs-toggle="tab" data-bs-target="#pestaña-graficos" type="button" role="tab" aria-controls="pestaña-graficos" aria-selected="false">
-                        <i class="fas fa-chart-line"></i> Gráficos
-                    </button>
-                </li>
+        
+        <!-- Tabla de Datos -->
+        <div class="table-card">
+            <div class="table-card-header">
+                <i class="fas fa-table"></i> Estadísticas de Jugadores
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="table table-hover" id="tablaJugadores">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user me-2"></i>Jugador</th>
+                            <th><i class="fas fa-shield me-2"></i>Equipo</th>
+                            <th class="text-center">Partidos</th>
+                            <th class="text-center">Canastas Tiradas</th>
+                            <th class="text-center">Encestadas</th>
+                            <th class="text-center">3 Puntos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla">
+                        <!-- Se llena con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Paginación -->
+        <div class="pagination-container">
+            <ul class="pagination" id="paginacion">
+                <!-- Se llena con JavaScript -->
             </ul>
         </div>
     </div>
     
-    <!-- Contenido de Pestañas -->
-    <div class="tab-content" id="contenidoPestañas">
-        
-        <!-- PESTAÑA 1: DATOS BÁSICOS -->
-        <div class="tab-pane fade show active" id="pestaña-datos" role="tabpanel" aria-labelledby="pestaña-datos-tab">
-            <!-- Información de la tabla -->
-            <div class="row mb-4">
-                <div class="col-lg-12">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <p class="mb-0"><strong>Total de Jugadores:</strong> <span id="totalJugadores">0</span></p>
-                            <p class="mb-0"><strong>Página:</strong> <span id="paginaActual">1</span> de <span id="totalPaginas">1</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Tabla de Datos -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-success text-white">
-                            <i class="fas fa-table"></i> Estadísticas de Jugadores
-                        </div>
-                        <div class="card-body" style="overflow-x: auto;">
-                            <table class="table table-striped table-hover" id="tablaJugadores">
-                                <thead>
-                                    <tr>
-                                        <th>Jugador</th>
-                                        <th>Equipo</th>
-                                        <th>Partidos Jugados</th>
-                                        <th>Canastas Tiradas</th>
-                                        <th>Encestadas</th>
-                                        <th>3 Puntos</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="cuerpoTabla">
-                                    <!-- Se llena con JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Paginación -->
-            <div class="row mt-4 mb-4">
-                <div class="col-lg-12">
-                    <nav aria-label="Paginación">
-                        <ul class="pagination justify-content-center" id="paginacion">
-                            <!-- Se llena con JavaScript -->
-                        </ul>
-                    </nav>
-                </div>
+    <!-- PESTAÑA 2: MÉTRICAS AVANZADAS -->
+    <div class="tab-pane fade" id="pestaña-metricas" role="tabpanel" aria-labelledby="pestaña-metricas-tab">
+        <!-- Información de la tabla de métricas -->
+        <div class="info-card">
+            <div>
+                <p><strong>Total de Jugadores:</strong> <span class="value" id="totalJugadoresMetricas">0</span></p>
+                <p><strong>Página:</strong> <span id="paginaActualMetricas">1</span> de <span id="totalPaginasMetricas">1</span></p>
             </div>
         </div>
         
-        <!-- PESTAÑA 2: MÉTRICAS AVANZADAS -->
-        <div class="tab-pane fade" id="pestaña-metricas" role="tabpanel" aria-labelledby="pestaña-metricas-tab">
-            <!-- Información de la tabla de métricas -->
-            <div class="row mb-4">
-                <div class="col-lg-12">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <p class="mb-0"><strong>Total de Jugadores:</strong> <span id="totalJugadoresMetricas">0</span></p>
-                            <p class="mb-0"><strong>Página:</strong> <span id="paginaActualMetricas">1</span> de <span id="totalPaginasMetricas">1</span></p>
-                        </div>
-                    </div>
-                </div>
+        <!-- Tabla de Métricas Avanzadas -->
+        <div class="table-card">
+            <div class="table-card-header" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
+                <i class="fas fa-chart-bar"></i> Métricas Avanzadas de Jugadores
             </div>
-            
-            <!-- Tabla de Métricas Avanzadas -->
+            <div style="overflow-x: auto;">
+                <table class="table table-hover" id="tablaMetricas">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user me-2"></i>Jugador</th>
+                            <th><i class="fas fa-shield me-2"></i>Equipo</th>
+                            <th class="text-center">PJ</th>
+                            <th class="text-center">CT</th>
+                            <th class="text-center">Enc.</th>
+                            <th class="text-center">3P</th>
+                            <th class="text-center">TC%</th>
+                            <th class="text-center">2P%</th>
+                            <th class="text-center">PPP</th>
+                            <th class="text-center">Vol. Tiro/J</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTablaMestricas">
+                        <!-- Se llena con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Paginación de Métricas -->
+        <div class="pagination-container">
+            <ul class="pagination" id="paginacionMetricas">
+                <!-- Se llena con JavaScript -->
+            </ul>
+        </div>
+        
+        <!-- Leyenda de Columnas -->
+        <div class="legend-card">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                <i class="fas fa-info-circle" style="color: var(--accent-color); font-size: 1.2rem;"></i>
+                <h6 style="margin: 0; color: var(--primary-color); font-weight: 700;">Leyenda de Columnas</h6>
+            </div>
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-info text-white">
-                            <i class="fas fa-chart-bar"></i> Métricas Avanzadas de Jugadores
-                        </div>
-                        <div class="card-body" style="overflow-x: auto;">
-                            <div style="overflow-x: auto;">
-                                <table class="table table-striped table-hover" id="tablaMetricas">
-                                    <thead>
-                                        <tr>
-                                            <th>Jugador</th>
-                                            <th>Equipo</th>
-                                            <th>PJ</th>
-                                            <th>CT</th>
-                                            <th>Enc.</th>
-                                            <th>3P</th>
-                                            <th>TC%</th>
-                                            <th>2P%</th>
-                                            <th>PPP</th>
-                                            <th>Vol. Tiro/J</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="cuerpoTablaMestricas">
-                                        <!-- Se llena con JavaScript -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-6">
+                    <p><strong>PJ:</strong> Partidos Jugados</p>
+                    <p><strong>CT:</strong> Canastas Tiradas</p>
+                    <p><strong>Enc.:</strong> Canastas Encestadas</p>
+                    <p><strong>3P:</strong> Tiros de 3 Puntos</p>
+                    <p><strong>TC%:</strong> Porcentaje de Tiro de Campo (Eficiencia General)</p>
                 </div>
-            </div>
-            
-            <!-- Paginación de Métricas -->
-            <div class="row mt-4 mb-4">
-                <div class="col-lg-12">
-                    <nav aria-label="Paginación de Métricas">
-                        <ul class="pagination justify-content-center" id="paginacionMetricas">
-                            <!-- Se llena con JavaScript -->
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-            
-            <!-- Leyenda de Columnas -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card shadow-sm bg-light">
-                        <div class="card-header bg-secondary text-white">
-                            <i class="fas fa-info-circle"></i> Leyenda de Columnas
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>PJ:</strong> Partidos Jugados</p>
-                                    <p><strong>CT:</strong> Canastas Tiradas</p>
-                                    <p><strong>Enc.:</strong> Canastas Encestadas</p>
-                                    <p><strong>3P:</strong> Tiros de 3 Puntos</p>
-                                    <p><strong>TC%:</strong> Porcentaje de Tiro de Campo (Eficiencia General)</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>2P%:</strong> Porcentaje de Tiros de 2 Puntos</p>
-                                    <p><strong>PPP:</strong> Puntos por Partido (Estimado sin tiros libres)</p>
-                                    <p><strong>Vol. Tiro/J:</strong> Volumen de Tiro por Partido (dependencia ofensiva)</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-6">
+                    <p><strong>2P%:</strong> Porcentaje de Tiros de 2 Puntos</p>
+                    <p><strong>PPP:</strong> Puntos por Partido (Estimado sin tiros libres)</p>
+                    <p><strong>Vol. Tiro/J:</strong> Volumen de Tiro por Partido (dependencia ofensiva)</p>
                 </div>
             </div>
         </div>
+    </div>
         
         <!-- PESTAÑA 3: GRÁFICOS -->
         <div class="tab-pane fade" id="pestaña-graficos" role="tabpanel" aria-labelledby="pestaña-graficos-tab">
-            <div class="row mb-4">
-                <div class="col-lg-12">
-                    <button class="btn btn-primary" onclick="generarGraficos()">
-                        <i class="fas fa-sync"></i> Generar Gráficos
-                    </button>
-                    <span id="cargandoGraficos" class="ms-3" style="display: none;">
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando gráficos...
-                    </span>
-                </div>
+            <div style="margin-bottom: 2rem;">
+                <button class="btn btn-generate" onclick="generarGraficos()">
+                    <i class="fas fa-sync me-2"></i> Generar Gráficos
+                </button>
+                <span id="cargandoGraficos" class="loading-indicator" style="display: none;">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando gráficos...
+                </span>
             </div>
             
             <!-- Gráfico de Dispersión -->
-            <div class="row mb-4">
-                <div class="col-lg-12">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-warning text-dark">
-                            <i class="fas fa-chart-scatter"></i> Scatter Plot: Volumen vs Eficiencia
-                        </div>
-                        <div class="card-body">
-                            <p class="text-muted mb-3">
-                                <strong>Interpretación:</strong> Este gráfico muestra la relación entre el volumen de tiro (eje X) 
-                                y el porcentaje de acierto (eje Y). Identifica a las "estrellas eficientes" (arriba-derecha) 
-                                que tiran mucho y aciertan mucho, versus los "agujeros negros" (abajo-derecha) 
-                                que tiran mucho pero fallan más.
-                            </p>
-                            <div id="scatterContainer" style="display:none; height: 700px;">
-                                <iframe id="iframeScatter" style="width:100%; height:100%; border:none;"></iframe>
-                            </div>
-                            <div id="placeholderScatter" class="text-center text-muted py-5">
-                                <p>Haz clic en "Generar Gráficos" para ver el scatter plot interactivo</p>
-                            </div>
-                        </div>
+            <div class="table-card" style="overflow: visible;">
+                <div class="table-card-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <i class="fas fa-chart-scatter"></i> Scatter Plot: Volumen vs Eficiencia
+                </div>
+                <div style="padding: 1.5rem;">
+                    <div class="graph-interpretation">
+                        <strong><i class="fas fa-lightbulb me-2"></i>Interpretación:</strong> Este gráfico muestra la relación entre el volumen de tiro (eje X) 
+                        y el porcentaje de acierto (eje Y). Identifica a las "estrellas eficientes" (arriba-derecha) 
+                        que tiran mucho y aciertan mucho, versus los "agujeros negros" (abajo-derecha) 
+                        que tiran mucho pero fallan más.
+                    </div>
+                    <div id="scatterContainer" class="graph-container" style="display:none;">
+                        <iframe id="iframeScatter"></iframe>
+                    </div>
+                    <div id="placeholderScatter" class="placeholder-content">
+                        <i class="fas fa-chart-scatter"></i>
+                        <p>Haz clic en "Generar Gráficos" para ver el scatter plot interactivo</p>
                     </div>
                 </div>
             </div>
             
             <!-- Gráfico de Barras por Equipo -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-success text-white">
-                            <i class="fas fa-bar-chart"></i> Rendimiento Ofensivo por Equipo
-                        </div>
-                        <div class="card-body">
-                            <p class="text-muted mb-3">
-                                <strong>Interpretación:</strong> Este gráfico compara el rendimiento ofensivo total 
-                                de cada equipo (suma de puntos estimados de todos sus jugadores). Los equipos con 
-                                barras más largas tienen un mejor rendimiento ofensivo general.
-                            </p>
-                            <div id="barrasContainer" style="display:none; height: 700px;">
-                                <iframe id="iframeBarras" style="width:100%; height:100%; border:none;"></iframe>
-                            </div>
-                            <div id="placeholderBarras" class="text-center text-muted py-5">
-                                <p>Haz clic en "Generar Gráficos" para ver el gráfico de equipos</p>
-                            </div>
-                        </div>
+            <div class="table-card" style="margin-top: 2rem; overflow: visible;">
+                <div class="table-card-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <i class="fas fa-bar-chart"></i> Rendimiento Ofensivo por Equipo
+                </div>
+                <div style="padding: 1.5rem;">
+                    <div class="graph-interpretation">
+                        <strong><i class="fas fa-lightbulb me-2"></i>Interpretación:</strong> Este gráfico compara el rendimiento ofensivo total 
+                        de cada equipo (suma de puntos estimados de todos sus jugadores). Los equipos con 
+                        barras más largas tienen un mejor rendimiento ofensivo general.
+                    </div>
+                    <div id="barrasContainer" class="graph-container" style="display:none;">
+                        <iframe id="iframeBarras"></iframe>
+                    </div>
+                    <div id="placeholderBarras" class="placeholder-content">
+                        <i class="fas fa-bar-chart"></i>
+                        <p>Haz clic en "Generar Gráficos" para ver el gráfico de equipos</p>
                     </div>
                 </div>
             </div>
@@ -255,51 +214,6 @@
         
     </div>
 </div>
-
-<style>
-    .table {
-        font-size: 0.9rem;
-        margin-bottom: 0;
-    }
-    .table thead {
-        background-color: #f8f9fa;
-        font-weight: 600;
-    }
-    .table-hover tbody tr:hover {
-        background-color: #f5f5f5;
-    }
-    .pagination {
-        margin: 0;
-    }
-    .page-link {
-        color: #0d6efd;
-    }
-    .page-link:hover {
-        color: #0b5ed7;
-        background-color: #e9ecef;
-    }
-    .page-item.active .page-link {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
-    }
-    .nav-tabs {
-        border-bottom: 2px solid #dee2e6;
-    }
-    .nav-tabs .nav-link {
-        color: #495057;
-        border: none;
-        border-bottom: 3px solid transparent;
-        font-weight: 500;
-    }
-    .nav-tabs .nav-link:hover {
-        color: #0d6efd;
-    }
-    .nav-tabs .nav-link.active {
-        color: #0d6efd;
-        border-bottom-color: #0d6efd;
-        background-color: transparent;
-    }
-</style>
 
 <script>
     // Parámetros globales
