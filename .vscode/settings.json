@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd \"c:\\\\Users\\\\dhergar1708\\\\Desktop\\\\Proyecto Final\" ; python src/main\\.py$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

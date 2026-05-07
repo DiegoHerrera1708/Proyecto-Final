@@ -161,7 +161,7 @@
         <div class="tab-pane fade" id="pestaña-graficos" role="tabpanel" aria-labelledby="pestaña-graficos-tab">
             <div style="margin-bottom: 2rem;">
                 <button class="btn btn-generate" onclick="generarGraficos()">
-                    <i class="fas fa-sync me-2"></i> Generar Gráficos
+                    <i class="fas fa-sync me-2"></i> Actualizar
                 </button>
                 <span id="cargandoGraficos" class="loading-indicator" style="display: none;">
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando gráficos...
@@ -227,6 +227,7 @@
     // Inicializar tabla al cargar la página
     document.addEventListener('DOMContentLoaded', function() {
         actualizarFiltros();
+        generarGraficos();
     });
     
     function actualizarFiltros() {
@@ -235,6 +236,7 @@
         paginaActualMetricas = 1;
         cargarDatos(1);
         cargarMetricasAvanzadas(1);
+        generarGraficos();
     }
     
     // ========== DATOS BÁSICOS ==========

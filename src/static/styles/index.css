@@ -36,12 +36,13 @@
     z-index: 1;
 }
 
-.hero-title {
+h1.hero-title {
     font-size: 3.5rem;
     font-weight: 800;
     margin-bottom: 1rem;
     line-height: 1.2;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    color: white !important;
 }
 
 .hero-subtitle {
@@ -49,6 +50,7 @@
     margin-bottom: 2rem;
     opacity: 0.95;
     font-weight: 300;
+    color: white !important;
 }
 
 .btn-hero {
@@ -105,6 +107,15 @@
     animation: bounce 2s infinite;
 }
 
+.feature-image {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 @keyframes bounce {
     0%, 100% {
         transform: translateY(0);
@@ -134,7 +145,7 @@
 }
 
 .feature-description {
-    color: var(--gray-text);
+    color: #555;
     font-size: var(--font-size-base);
     line-height: 1.6;
 }

@@ -70,15 +70,6 @@ p {
     color: var(--accent-color);
 }
 
-.navbar-brand::before {
-    content: '';
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background-color: var(--accent-color);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-}
 
 @keyframes pulse {
     0%, 100% {
