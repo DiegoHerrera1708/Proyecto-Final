@@ -37,7 +37,7 @@ p {
 /* Navbar */
 .navbar {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    box-shadow: 0 4px 12px rgba(30, 60, 114, 0.15);
+    box-shadow: 0 4px 12px rgba(194, 65, 12, 0.15);
     padding: 1rem 0;
     position: sticky;
     top: 0;
@@ -105,7 +105,7 @@ footer {
     text-align: center;
     padding: 2rem;
     margin-top: 4rem;
-    box-shadow: 0 -4px 12px rgba(30, 60, 114, 0.1);
+    box-shadow: 0 -4px 12px rgba(194, 65, 12, 0.1);
 }
 
 footer p {

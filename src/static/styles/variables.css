@@ -1,11 +1,11 @@
 /* Variables Globales */
 :root {
     /* Colores */
-    --primary-color: #1e3c72;
-    --secondary-color: #2a5298;
-    --accent-color: #00d4ff;
+    --primary-color: #c2410c;
+    --secondary-color: #f97316;
+    --accent-color: #ffb703;
     --success-color: #10b981;
-    --info-color: #3b82f6;
+    --info-color: #fb923c;
     --warning-color: #f59e0b;
     --danger-color: #ef4444;
     --light-bg: #f8fafc;
@@ -30,10 +30,10 @@
     --radius-xl: 16px;
 
     /* Sombras */
-    --shadow-sm: 0 2px 8px rgba(30, 60, 114, 0.08);
-    --shadow-md: 0 4px 12px rgba(30, 60, 114, 0.12);
-    --shadow-lg: 0 8px 16px rgba(30, 60, 114, 0.15);
-    --shadow-xl: 0 12px 24px rgba(30, 60, 114, 0.2);
+    --shadow-sm: 0 2px 8px rgba(194, 65, 12, 0.08);
+    --shadow-md: 0 4px 12px rgba(194, 65, 12, 0.12);
+    --shadow-lg: 0 8px 16px rgba(194, 65, 12, 0.15);
+    --shadow-xl: 0 12px 24px rgba(194, 65, 12, 0.2);
 
     /* Tipografía */
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

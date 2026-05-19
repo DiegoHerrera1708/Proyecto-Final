@@ -5,7 +5,7 @@
     padding: 2.5rem;
     border-radius: var(--radius-lg);
     margin-bottom: 3rem;
-    box-shadow: 0 8px 16px rgba(30, 60, 114, 0.15);
+    box-shadow: 0 8px 16px rgba(194, 65, 12, 0.15);
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -56,7 +56,7 @@
     display: flex;
     border: none;
     gap: 0.5rem;
-    background: linear-gradient(to right, rgba(30, 60, 114, 0.05), transparent);
+    background: linear-gradient(to right, rgba(194, 65, 12, 0.05), transparent);
     margin-bottom: 0;
     border-bottom: 2px solid var(--border-color);
     flex-wrap: wrap;
@@ -85,7 +85,7 @@
 
 .nav-link:hover {
     border-color: var(--accent-color);
-    background: linear-gradient(135deg, rgba(30, 60, 114, 0.05), rgba(0, 212, 255, 0.05));
+    background: linear-gradient(135deg, rgba(194, 65, 12, 0.05), rgba(255, 183, 3, 0.05));
     transform: translateY(-2px);
 }
 
@@ -93,7 +93,7 @@
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
     border-color: transparent;
-    box-shadow: 0 4px 12px rgba(30, 60, 114, 0.2);
+    box-shadow: 0 4px 12px rgba(194, 65, 12, 0.2);
 }
 
 .nav-link.active:hover {
@@ -164,7 +164,7 @@
 }
 
 .table thead {
-    background: linear-gradient(135deg, rgba(30, 60, 114, 0.08), rgba(42, 82, 152, 0.08));
+    background: linear-gradient(135deg, rgba(194, 65, 12, 0.08), rgba(249, 115, 22, 0.08));
     font-weight: 700;
     color: var(--primary-color);
     border-bottom: 2px solid var(--border-color);
@@ -187,7 +187,7 @@
 }
 
 .table tbody tr:hover {
-    background-color: rgba(0, 212, 255, 0.05);
+    background-color: rgba(255, 183, 3, 0.08);
 }
 
 .table tbody tr:last-child td {
@@ -240,7 +240,7 @@
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
     border-color: transparent;
-    box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
+    box-shadow: 0 4px 12px rgba(194, 65, 12, 0.3);
 }
 
 .page-item.disabled .page-link {
@@ -254,7 +254,7 @@
 .placeholder-content {
     text-align: center;
     padding: 4rem 2rem;
-    background: linear-gradient(135deg, rgba(30, 60, 114, 0.03), rgba(0, 212, 255, 0.03));
+    background: linear-gradient(135deg, rgba(194, 65, 12, 0.03), rgba(255, 183, 3, 0.03));
     border-radius: var(--radius-lg);
 }
 
@@ -273,7 +273,7 @@
 
 /* Legend Card */
 .legend-card {
-    background: linear-gradient(135deg, rgba(30, 60, 114, 0.05), rgba(0, 212, 255, 0.05));
+    background: linear-gradient(135deg, rgba(194, 65, 12, 0.05), rgba(255, 183, 3, 0.05));
     border-radius: var(--radius-lg);
     padding: 2rem;
     border-left: 5px solid var(--accent-color);

@@ -333,7 +333,7 @@ def generar_scatter_plot(ano):
     fig.add_vline(
         x=mediana_ct,
         line_dash="dash",
-        line_color="blue",
+        line_color="#f97316",
         annotation_text=f"Mediana: {mediana_ct:.0f}",
         annotation_position="top"
     )
@@ -392,10 +392,10 @@ def generar_grafico_equipos(ano):
     # Crear gráfico de barras horizontal
     plt.figure(figsize=(14, 10))
     
-    bars = plt.barh(df_equipos['Equipo'], df_equipos['Puntos Totales'], color='steelblue', edgecolor='black', linewidth=0.7)
+    bars = plt.barh(df_equipos['Equipo'], df_equipos['Puntos Totales'], color='#f97316', edgecolor='black', linewidth=0.7)
     
     # Colorear barras con gradiente
-    colors = plt.cm.RdYlGn(df_equipos['Puntos Totales'] / df_equipos['Puntos Totales'].max())
+    colors = plt.cm.Oranges(df_equipos['Puntos Totales'] / df_equipos['Puntos Totales'].max())
     for bar, color in zip(bars, colors):
         bar.set_color(color)
     

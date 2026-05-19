@@ -26,7 +26,7 @@
 }
 
 .btn-primary:hover {
-    box-shadow: 0 8px 16px rgba(30, 60, 114, 0.3);
+    box-shadow: 0 8px 16px rgba(194, 65, 12, 0.3);
     color: white;
 }
 
@@ -42,13 +42,13 @@
 }
 
 .btn-generate {
-    background: linear-gradient(135deg, var(--accent-color) 0%, #00b8d4 100%);
+    background: linear-gradient(135deg, var(--accent-color) 0%, #f97316 100%);
     color: white;
-    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(255, 183, 3, 0.3);
 }
 
 .btn-generate:hover {
-    box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
+    box-shadow: 0 8px 20px rgba(255, 183, 3, 0.4);
 }
 
 /* Tarjetas */
@@ -107,7 +107,7 @@ label {
 .form-control:focus,
 .form-select:focus {
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.15);
+    box-shadow: 0 0 0 0.2rem rgba(255, 183, 3, 0.15);
     outline: none;
 }
 
