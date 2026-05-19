@@ -1,20 +1,20 @@
 {% extends "layout.html" %}
 
+{% block title %}Dashboard{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}">
 {% endblock %}
 
 {% block content %}
-
 <div class="dashboard-header">
     <i class="fas fa-chart-bar"></i>
-    <h1>Dashboard de Estadísticas de Jugadores</h1>
+    <h1>Dashboard de Estadisticas de Jugadores</h1>
 </div>
 
-<!-- Filtros -->
 <div class="filter-card">
     <label for="selectorAno" class="form-label">
-        <i class="fas fa-calendar-alt me-2"></i>Filtrar por Año/Temporada:
+        <i class="fas fa-calendar-alt me-2"></i>Filtrar por Ano/Temporada:
     </label>
     <select id="selectorAno" class="form-select" onchange="actualizarFiltros()">
         {% for ano in anos_unicos %}
@@ -24,432 +24,38 @@
         {% endfor %}
     </select>
 </div>
-
-<!-- Navegación con Pestañas -->
-<ul class="nav nav-tabs" id="pestañas" role="tablist">
+<ul class="nav nav-tabs" id="pestanas" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="pestaña-datos-tab" data-bs-toggle="tab" data-bs-target="#pestaña-datos" type="button" role="tab" aria-controls="pestaña-datos" aria-selected="true">
-            <i class="fas fa-table"></i> Datos Básicos
+        <button class="nav-link active" id="pestana-datos-tab" data-bs-toggle="tab" data-bs-target="#pestana-datos" type="button" role="tab" aria-controls="pestana-datos" aria-selected="true">
+            <i class="fas fa-table"></i> Datos Basicos
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="pestaña-metricas-tab" data-bs-toggle="tab" data-bs-target="#pestaña-metricas" type="button" role="tab" aria-controls="pestaña-metricas" aria-selected="false">
-            <i class="fas fa-chart-bar"></i> Métricas Avanzadas
+        <button class="nav-link" id="pestana-metricas-tab" data-bs-toggle="tab" data-bs-target="#pestana-metricas" type="button" role="tab" aria-controls="pestana-metricas" aria-selected="false">
+            <i class="fas fa-chart-bar"></i> Metricas Avanzadas
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="pestaña-graficos-tab" data-bs-toggle="tab" data-bs-target="#pestaña-graficos" type="button" role="tab" aria-controls="pestaña-graficos" aria-selected="false">
-            <i class="fas fa-chart-line"></i> Gráficos
+        <button class="nav-link" id="pestana-graficos-tab" data-bs-toggle="tab" data-bs-target="#pestana-graficos" type="button" role="tab" aria-controls="pestana-graficos" aria-selected="false">
+            <i class="fas fa-chart-line"></i> Graficos
         </button>
     </li>
 </ul>
 
-<!-- Contenido de Pestañas -->
-<div class="tab-content" id="contenidoPestañas" style="margin-top: 2rem;">
-    
-    <!-- PESTAÑA 1: DATOS BÁSICOS -->
-    <div class="tab-pane fade show active" id="pestaña-datos" role="tabpanel" aria-labelledby="pestaña-datos-tab">
-        <!-- Información de la tabla -->
-        <div class="info-card">
-            <div>
-                <p><strong>Total de Jugadores:</strong> <span class="value" id="totalJugadores">0</span></p>
-                <p><strong>Página:</strong> <span id="paginaActual">1</span> de <span id="totalPaginas">1</span></p>
-            </div>
-        </div>
-        
-        <!-- Tabla de Datos -->
-        <div class="table-card">
-            <div class="table-card-header">
-                <i class="fas fa-table"></i> Estadísticas de Jugadores
-            </div>
-            <div style="overflow-x: auto;">
-                <table class="table table-hover" id="tablaJugadores">
-                    <thead>
-                        <tr>
-                            <th><i class="fas fa-user me-2"></i>Jugador</th>
-                            <th><i class="fas fa-shield me-2"></i>Equipo</th>
-                            <th class="text-center">Partidos</th>
-                            <th class="text-center">Canastas Tiradas</th>
-                            <th class="text-center">Encestadas</th>
-                            <th class="text-center">3 Puntos</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cuerpoTabla">
-                        <!-- Se llena con JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <!-- Paginación -->
-        <div class="pagination-container">
-            <ul class="pagination" id="paginacion">
-                <!-- Se llena con JavaScript -->
-            </ul>
-        </div>
-    </div>
-    
-    <!-- PESTAÑA 2: MÉTRICAS AVANZADAS -->
-    <div class="tab-pane fade" id="pestaña-metricas" role="tabpanel" aria-labelledby="pestaña-metricas-tab">
-        <!-- Información de la tabla de métricas -->
-        <div class="info-card">
-            <div>
-                <p><strong>Total de Jugadores:</strong> <span class="value" id="totalJugadoresMetricas">0</span></p>
-                <p><strong>Página:</strong> <span id="paginaActualMetricas">1</span> de <span id="totalPaginasMetricas">1</span></p>
-            </div>
-        </div>
-        
-        <!-- Tabla de Métricas Avanzadas -->
-        <div class="table-card">
-            <div class="table-card-header" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
-                <i class="fas fa-chart-bar"></i> Métricas Avanzadas de Jugadores
-            </div>
-            <div style="overflow-x: auto;">
-                <table class="table table-hover" id="tablaMetricas">
-                    <thead>
-                        <tr>
-                            <th><i class="fas fa-user me-2"></i>Jugador</th>
-                            <th><i class="fas fa-shield me-2"></i>Equipo</th>
-                            <th class="text-center">PJ</th>
-                            <th class="text-center">CT</th>
-                            <th class="text-center">Enc.</th>
-                            <th class="text-center">3P</th>
-                            <th class="text-center">TC%</th>
-                            <th class="text-center">2P%</th>
-                            <th class="text-center">PPP</th>
-                            <th class="text-center">Vol. Tiro/J</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cuerpoTablaMestricas">
-                        <!-- Se llena con JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <!-- Paginación de Métricas -->
-        <div class="pagination-container">
-            <ul class="pagination" id="paginacionMetricas">
-                <!-- Se llena con JavaScript -->
-            </ul>
-        </div>
-        
-        <!-- Leyenda de Columnas -->
-        <div class="legend-card">
-            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
-                <i class="fas fa-info-circle" style="color: var(--accent-color); font-size: 1.2rem;"></i>
-                <h6 style="margin: 0; color: var(--primary-color); font-weight: 700;">Leyenda de Columnas</h6>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong>PJ:</strong> Partidos Jugados</p>
-                    <p><strong>CT:</strong> Canastas Tiradas</p>
-                    <p><strong>Enc.:</strong> Canastas Encestadas</p>
-                    <p><strong>3P:</strong> Tiros de 3 Puntos</p>
-                    <p><strong>TC%:</strong> Porcentaje de Tiro de Campo (Eficiencia General)</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>2P%:</strong> Porcentaje de Tiros de 2 Puntos</p>
-                    <p><strong>PPP:</strong> Puntos por Partido (Estimado sin tiros libres)</p>
-                    <p><strong>Vol. Tiro/J:</strong> Volumen de Tiro por Partido (dependencia ofensiva)</p>
-                </div>
-            </div>
-        </div>
-    </div>
-        
-        <!-- PESTAÑA 3: GRÁFICOS -->
-        <div class="tab-pane fade" id="pestaña-graficos" role="tabpanel" aria-labelledby="pestaña-graficos-tab">
-            <div style="margin-bottom: 2rem;">
-                <button class="btn btn-generate" onclick="generarGraficos()">
-                    <i class="fas fa-sync me-2"></i> Actualizar
-                </button>
-                <span id="cargandoGraficos" class="loading-indicator" style="display: none;">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando gráficos...
-                </span>
-            </div>
-            
-            <!-- Gráfico de Dispersión -->
-            <div class="table-card" style="overflow: visible;">
-                <div class="table-card-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                    <i class="fas fa-chart-scatter"></i> Scatter Plot: Volumen vs Eficiencia
-                </div>
-                <div style="padding: 1.5rem;">
-                    <div class="graph-interpretation">
-                        <strong><i class="fas fa-lightbulb me-2"></i>Interpretación:</strong> Este gráfico muestra la relación entre el volumen de tiro (eje X) 
-                        y el porcentaje de acierto (eje Y). Identifica a las "estrellas eficientes" (arriba-derecha) 
-                        que tiran mucho y aciertan mucho, versus los "agujeros negros" (abajo-derecha) 
-                        que tiran mucho pero fallan más.
-                    </div>
-                    <div id="scatterContainer" class="graph-container" style="display:none;">
-                        <iframe id="iframeScatter"></iframe>
-                    </div>
-                    <div id="placeholderScatter" class="placeholder-content">
-                        <i class="fas fa-chart-scatter"></i>
-                        <p>Haz clic en "Generar Gráficos" para ver el scatter plot interactivo</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Gráfico de Barras por Equipo -->
-            <div class="table-card" style="margin-top: 2rem; overflow: visible;">
-                <div class="table-card-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                    <i class="fas fa-bar-chart"></i> Rendimiento Ofensivo por Equipo
-                </div>
-                <div style="padding: 1.5rem;">
-                    <div class="graph-interpretation">
-                        <strong><i class="fas fa-lightbulb me-2"></i>Interpretación:</strong> Este gráfico compara el rendimiento ofensivo total 
-                        de cada equipo (suma de puntos estimados de todos sus jugadores). Los equipos con 
-                        barras más largas tienen un mejor rendimiento ofensivo general.
-                    </div>
-                    <div id="barrasContainer" class="graph-container" style="display:none;">
-                        <iframe id="iframeBarras"></iframe>
-                    </div>
-                    <div id="placeholderBarras" class="placeholder-content">
-                        <i class="fas fa-bar-chart"></i>
-                        <p>Haz clic en "Generar Gráficos" para ver el gráfico de equipos</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-    </div>
-</div>
 
+<div class="tab-content" id="contenidoPestanas">
+    {% include "dashboard/_datos_tab.html" %}
+    {% include "dashboard/_metricas_tab.html" %}
+    {% include "dashboard/_graficos_tab.html" %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
 <script>
-    // Parámetros globales
-    const anos_disponibles = {{ anos_unicos | tojson }};
-    let anoActual = {{ ano_inicial | tojson }};
-    let paginaActual = 1;
-    let paginaActualMetricas = 1;
-    const ITEMS_POR_PAGINA = 20;
-    const ITEMS_METRICAS_POR_PAGINA = 50;
-    
-    // Inicializar tabla al cargar la página
-    document.addEventListener('DOMContentLoaded', function() {
-        actualizarFiltros();
-        generarGraficos();
-    });
-    
-    function actualizarFiltros() {
-        anoActual = parseInt(document.getElementById('selectorAno').value);
-        paginaActual = 1;
-        paginaActualMetricas = 1;
-        cargarDatos(1);
-        cargarMetricasAvanzadas(1);
-        generarGraficos();
-    }
-    
-    // ========== DATOS BÁSICOS ==========
-    function cargarDatos(pagina) {
-        fetch(`/api/datos-jugadores?ano=${anoActual}&pagina=${pagina}&items_por_pagina=${ITEMS_POR_PAGINA}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                mostrarDatos(data, pagina);
-            })
-            .catch(error => {
-                console.error('Error al cargar datos:', error);
-                alert('Error al cargar los datos. Por favor, intenta nuevamente.');
-            });
-    }
-    
-    function mostrarDatos(data, pagina) {
-        paginaActual = pagina;
-        
-        // Actualizar información
-        document.getElementById('totalJugadores').textContent = data.total_jugadores;
-        document.getElementById('paginaActual').textContent = pagina;
-        document.getElementById('totalPaginas').textContent = data.total_paginas;
-        
-        // Llenar tabla
-        const tbody = document.getElementById('cuerpoTabla');
-        tbody.innerHTML = '';
-        
-        if (data.datos.length === 0) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = '<td colspan="6" class="text-center text-muted py-4">No hay datos disponibles</td>';
-            tbody.appendChild(tr);
-        } else {
-            data.datos.forEach(fila => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${fila.Jugador}</td>
-                    <td>${fila.Equipo}</td>
-                    <td class="text-center">${Math.round(fila['Partidos Jugados'])}</td>
-                    <td class="text-center">${Math.round(fila['Canastas Tiradas'])}</td>
-                    <td class="text-center">${Math.round(fila.Encestadas)}</td>
-                    <td class="text-center">${Math.round(fila['3 Puntos'])}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-        
-        // Generar paginación
-        generarPaginacion(data.total_paginas, pagina, 'paginacion', 'cargarDatos');
-    }
-    
-    // ========== MÉTRICAS AVANZADAS ==========
-    function cargarMetricasAvanzadas(pagina) {
-        fetch(`/api/metricas-avanzadas?ano=${anoActual}&pagina=${pagina}&items_por_pagina=${ITEMS_METRICAS_POR_PAGINA}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                mostrarMetricasAvanzadas(data, pagina);
-            })
-            .catch(error => {
-                console.error('Error al cargar métricas:', error);
-            });
-    }
-    
-    function mostrarMetricasAvanzadas(data, pagina) {
-        paginaActualMetricas = pagina;
-        
-        // Actualizar información
-        document.getElementById('totalJugadoresMetricas').textContent = data.total_jugadores;
-        document.getElementById('paginaActualMetricas').textContent = pagina;
-        document.getElementById('totalPaginasMetricas').textContent = data.total_paginas;
-        
-        // Llenar tabla
-        const tbody = document.getElementById('cuerpoTablaMestricas');
-        tbody.innerHTML = '';
-        
-        if (data.datos.length === 0) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = '<td colspan="10" class="text-center text-muted py-4">No hay datos disponibles</td>';
-            tbody.appendChild(tr);
-        } else {
-            data.datos.forEach(fila => {
-                const tr = document.createElement('tr');
-                
-                // Colorear TC% de rojo a verde (0-100%)
-                const tcPercent = fila['TC%'];
-                let tcColor = '#dc3545'; // Rojo
-                if (tcPercent > 50) tcColor = '#198754'; // Verde
-                else if (tcPercent > 40) tcColor = '#ffc107'; // Amarillo
-                
-                tr.innerHTML = `
-                    <td><strong>${fila.Jugador}</strong></td>
-                    <td>${fila.Equipo}</td>
-                    <td class="text-center">${Math.round(fila['Partidos Jugados'])}</td>
-                    <td class="text-center">${Math.round(fila['Canastas Tiradas'])}</td>
-                    <td class="text-center">${Math.round(fila.Encestadas)}</td>
-                    <td class="text-center">${Math.round(fila['3 Puntos'])}</td>
-                    <td class="text-center"><span style="background-color: ${tcColor}; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${fila['TC%']}%</span></td>
-                    <td class="text-center">${fila['2P%']}%</td>
-                    <td class="text-center"><span style="color: #0d6efd; font-weight: bold;">${fila.PPP}</span></td>
-                    <td class="text-center">${fila['Vol. Tiro/Partido']}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-        
-        // Generar paginación
-        generarPaginacion(data.total_paginas, pagina, 'paginacionMetricas', 'cargarMetricasAvanzadas');
-    }
-    
-    // ========== GRÁFICOS ==========
-    function generarGraficos() {
-        const cargando = document.getElementById('cargandoGraficos');
-        cargando.style.display = 'inline';
-        
-        fetch(`/api/generar-graficos?ano=${anoActual}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Mostrar scatter plot interactivo
-                const iframeScatter = document.getElementById('iframeScatter');
-                iframeScatter.src = '/' + data.scatter_plot + '?' + new Date().getTime();
-                document.getElementById('scatterContainer').style.display = 'block';
-                document.getElementById('placeholderScatter').style.display = 'none';
-                
-                // Mostrar gráfico de equipos
-                const iframeBarras = document.getElementById('iframeBarras');
-                iframeBarras.src = '/' + data.grafico_equipos + '?' + new Date().getTime();
-                document.getElementById('barrasContainer').style.display = 'block';
-                document.getElementById('placeholderBarras').style.display = 'none';
-                
-                cargando.style.display = 'none';
-            })
-            .catch(error => {
-                console.error('Error al generar gráficos:', error);
-                alert('Error al generar los gráficos.');
-                cargando.style.display = 'none';
-            });
-    }
-    
-    // ========== FUNCIONES COMUNES ==========
-    function generarPaginacion(totalPaginas, paginaActual, idPaginacion, funcionCambio) {
-        const paginacion = document.getElementById(idPaginacion);
-        paginacion.innerHTML = '';
-        
-        // Botón anterior
-        const liAnterior = document.createElement('li');
-        liAnterior.className = 'page-item ' + (paginaActual === 1 ? 'disabled' : '');
-        liAnterior.innerHTML = `<a class="page-link" href="#" onclick="${funcionCambio}(${paginaActual - 1}); return false;">Anterior</a>`;
-        paginacion.appendChild(liAnterior);
-        
-        // Números de página
-        const inicio = Math.max(1, paginaActual - 2);
-        const fin = Math.min(totalPaginas, paginaActual + 2);
-        
-        if (inicio > 1) {
-            const li = document.createElement('li');
-            li.className = 'page-item';
-            li.innerHTML = `<a class="page-link" href="#" onclick="${funcionCambio}(1); return false;">1</a>`;
-            paginacion.appendChild(li);
-            
-            if (inicio > 2) {
-                const liPuntos = document.createElement('li');
-                liPuntos.className = 'page-item disabled';
-                liPuntos.innerHTML = `<span class="page-link">...</span>`;
-                paginacion.appendChild(liPuntos);
-            }
-        }
-        
-        for (let i = inicio; i <= fin; i++) {
-            const li = document.createElement('li');
-            li.className = 'page-item ' + (i === paginaActual ? 'active' : '');
-            li.innerHTML = `<a class="page-link" href="#" onclick="${funcionCambio}(${i}); return false;">${i}</a>`;
-            paginacion.appendChild(li);
-        }
-        
-        if (fin < totalPaginas) {
-            if (fin < totalPaginas - 1) {
-                const liPuntos = document.createElement('li');
-                liPuntos.className = 'page-item disabled';
-                liPuntos.innerHTML = `<span class="page-link">...</span>`;
-                paginacion.appendChild(liPuntos);
-            }
-            
-            const li = document.createElement('li');
-            li.className = 'page-item';
-            li.innerHTML = `<a class="page-link" href="#" onclick="${funcionCambio}(${totalPaginas}); return false;">${totalPaginas}</a>`;
-            paginacion.appendChild(li);
-        }
-        
-        // Botón siguiente
-        const liSiguiente = document.createElement('li');
-        liSiguiente.className = 'page-item ' + (paginaActual === totalPaginas ? 'disabled' : '');
-        liSiguiente.innerHTML = `<a class="page-link" href="#" onclick="${funcionCambio}(${paginaActual + 1}); return false;">Siguiente</a>`;
-        paginacion.appendChild(liSiguiente);
-    }
-    
-    function cambiarPagina(nuevaPagina) {
-        if (nuevaPagina > 0) {
-            cargarDatos(nuevaPagina);
-        }
-    }
+    window.dashboardConfig = {
+        anosDisponibles: {{ anos_unicos | tojson }},
+        anoInicial: {{ ano_inicial | tojson }}
+    };
 </script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}

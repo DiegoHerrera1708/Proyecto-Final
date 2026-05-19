@@ -146,6 +146,7 @@
 }
 
 .table-card-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     padding: 1rem 1.5rem;
     font-weight: 700;
     font-size: 1rem;
@@ -156,7 +157,23 @@
     color: white;
 }
 
+.table-card-header--metrics {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.table-card-header--scatter {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.table-card-header--teams {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
 /* Tables */
+.table-scroll {
+    overflow-x: auto;
+}
+
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -299,6 +316,22 @@
     font-weight: 700;
 }
 
+.legend-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.legend-card-title i {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+}
+
+.legend-card-title h6 {
+    margin: 0;
+}
+
 /* Loading Indicator */
 .loading-indicator {
     display: inline-flex;
@@ -309,7 +342,23 @@
     font-weight: 600;
 }
 
+.graphs-toolbar {
+    margin-bottom: 2rem;
+}
+
 /* Graph Containers */
+.table-card--graph {
+    overflow: visible;
+}
+
+.table-card--stacked {
+    margin-top: 2rem;
+}
+
+.graph-card-body {
+    padding: 1.5rem;
+}
+
 .graph-container {
     min-height: 60vh;
     height: auto;
@@ -317,6 +366,12 @@
     border-radius: var(--radius-lg);
     overflow: visible;
     display: block;
+}
+
+#scatterContainer,
+#barrasContainer,
+#cargandoGraficos {
+    display: none;
 }
 
 .graph-container iframe {
@@ -353,6 +408,30 @@
 
 .tab-pane.active {
     display: block;
+}
+
+.metric-badge {
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.metric-badge--high {
+    background-color: #198754;
+}
+
+.metric-badge--medium {
+    background-color: #ffc107;
+}
+
+.metric-badge--low {
+    background-color: #dc3545;
+}
+
+.metric-ppp {
+    color: #0d6efd;
+    font-weight: bold;
 }
 
 /* Responsive */

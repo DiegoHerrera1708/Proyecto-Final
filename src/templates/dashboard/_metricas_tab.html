@@ -1,0 +1,59 @@
+<div class="tab-pane fade" id="pestana-metricas" role="tabpanel" aria-labelledby="pestana-metricas-tab">
+    <div class="info-card">
+        <div>
+            <p><strong>Total de Jugadores:</strong> <span class="value" id="totalJugadoresMetricas">0</span></p>
+            <p><strong>Pagina:</strong> <span id="paginaActualMetricas">1</span> de <span id="totalPaginasMetricas">1</span></p>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="table-card-header table-card-header--metrics">
+            <i class="fas fa-chart-bar"></i> Metricas Avanzadas de Jugadores
+        </div>
+        <div class="table-scroll">
+            <table class="table table-hover" id="tablaMetricas">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user me-2"></i>Jugador</th>
+                        <th><i class="fas fa-shield me-2"></i>Equipo</th>
+                        <th class="text-center">PJ</th>
+                        <th class="text-center">CT</th>
+                        <th class="text-center">Enc.</th>
+                        <th class="text-center">3P</th>
+                        <th class="text-center">TC%</th>
+                        <th class="text-center">2P%</th>
+                        <th class="text-center">PPP</th>
+                        <th class="text-center">Vol. Tiro/J</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpoTablaMestricas"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="pagination-container">
+        <ul class="pagination" id="paginacionMetricas"></ul>
+    </div>
+
+    <div class="legend-card">
+        <div class="legend-card-title">
+            <i class="fas fa-info-circle"></i>
+            <h6>Leyenda de Columnas</h6>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>PJ:</strong> Partidos Jugados</p>
+                <p><strong>CT:</strong> Canastas Tiradas</p>
+                <p><strong>Enc.:</strong> Canastas Encestadas</p>
+                <p><strong>3P:</strong> Tiros de 3 Puntos</p>
+                <p><strong>TC%:</strong> Porcentaje de Tiro de Campo (Eficiencia General)</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>2P%:</strong> Porcentaje de Tiros de 2 Puntos</p>
+                <p><strong>PPP:</strong> Puntos por Partido (Estimado sin tiros libres)</p>
+                <p><strong>Vol. Tiro/J:</strong> Volumen de Tiro por Partido (dependencia ofensiva)</p>
+            </div>
+        </div>
+    </div>
+</div>
+

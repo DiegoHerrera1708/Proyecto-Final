@@ -1,0 +1,52 @@
+<div class="tab-pane fade" id="pestana-graficos" role="tabpanel" aria-labelledby="pestana-graficos-tab">
+    <div class="graphs-toolbar">
+        <button class="btn btn-generate" onclick="generarGraficos()">
+            <i class="fas fa-sync me-2"></i> Actualizar
+        </button>
+        <span id="cargandoGraficos" class="loading-indicator">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando graficos...
+        </span>
+    </div>
+
+    <div class="table-card table-card--graph">
+        <div class="table-card-header table-card-header--scatter">
+            <i class="fas fa-chart-scatter"></i> Scatter Plot: Volumen vs Eficiencia
+        </div>
+        <div class="graph-card-body">
+            <div class="graph-interpretation">
+                <strong><i class="fas fa-lightbulb me-2"></i>Interpretacion:</strong> Este grafico muestra la relacion entre el volumen de tiro (eje X)
+                y el porcentaje de acierto (eje Y). Identifica a las "estrellas eficientes" (arriba-derecha)
+                que tiran mucho y aciertan mucho, versus los "agujeros negros" (abajo-derecha)
+                que tiran mucho pero fallan mas.
+            </div>
+            <div id="scatterContainer" class="graph-container">
+                <iframe id="iframeScatter"></iframe>
+            </div>
+            <div id="placeholderScatter" class="placeholder-content">
+                <i class="fas fa-chart-scatter"></i>
+                <p>Haz clic en "Generar Graficos" para ver el scatter plot interactivo</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-card table-card--graph table-card--stacked">
+        <div class="table-card-header table-card-header--teams">
+            <i class="fas fa-bar-chart"></i> Rendimiento Ofensivo por Equipo
+        </div>
+        <div class="graph-card-body">
+            <div class="graph-interpretation">
+                <strong><i class="fas fa-lightbulb me-2"></i>Interpretacion:</strong> Este grafico compara el rendimiento ofensivo total
+                de cada equipo (suma de puntos estimados de todos sus jugadores). Los equipos con
+                barras mas largas tienen un mejor rendimiento ofensivo general.
+            </div>
+            <div id="barrasContainer" class="graph-container">
+                <iframe id="iframeBarras"></iframe>
+            </div>
+            <div id="placeholderBarras" class="placeholder-content">
+                <i class="fas fa-bar-chart"></i>
+                <p>Haz clic en "Generar Graficos" para ver el grafico de equipos</p>
+            </div>
+        </div>
+    </div>
+</div>
+
