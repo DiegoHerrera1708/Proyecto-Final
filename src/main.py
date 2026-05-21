@@ -9,7 +9,7 @@ from analytics import (
     generar_grafico_equipos
 )
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='templates/static', static_url_path='/static')
 
 @app.route('/')
 def index():
@@ -23,8 +23,8 @@ def dashboard():
         
         # Renderizar el template con los años disponibles
         return render_template('dashboard.html', 
-                             anos_unicos=anos_unicos,
-                             ano_inicial=anos_unicos[0] if anos_unicos else None)
+                                anos_unicos=anos_unicos,
+                                ano_inicial=anos_unicos[0] if anos_unicos else None)
     
     except FileNotFoundError:
         return "Error: No se encontró el archivo de datos en la carpeta data/", 404
