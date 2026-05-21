@@ -334,26 +334,28 @@ def generar_scatter_plot(ano):
         x=mediana_ct,
         line_dash="dash",
         line_color="#f97316",
-        annotation_text=f"Mediana: {mediana_ct:.0f}",
+        annotation_text=f"Mediana CT: {mediana_ct:.0f}",
         annotation_position="top"
     )
     
     # Actualizar layout
     fig.update_layout(
         title=f'Eficiencia de Tiro: Volumen vs Porcentaje - Año {ano}',
-        xaxis_title='Canastas Tiradas',
-        yaxis_title='Porcentaje de Acierto (TC%)',
+        xaxis_title='CT (Canastas Tiradas)',
+        yaxis_title='TC% (Porcentaje de Acierto)',
         hovermode='closest',
-        height=700,
+        height=500,
+        autosize=True,
         template='plotly_white',
         showlegend=False,
         font=dict(size=11),
+        margin=dict(l=50, r=50, t=50, b=50),
         xaxis=dict(gridwidth=1, gridcolor='lightgray'),
         yaxis=dict(gridwidth=1, gridcolor='lightgray')
     )
     
     # Guardar gráfico HTML
-    ruta_grafico = 'src/static/img/scatter_eficiencia.html'
+    ruta_grafico = 'src/templates/static/img/scatter_eficiencia.html'
     os.makedirs(os.path.dirname(ruta_grafico), exist_ok=True)
     fig.write_html(ruta_grafico)
     
@@ -390,7 +392,7 @@ def generar_grafico_equipos(ano):
     df_equipos = df_equipos.sort_values('Puntos Totales', ascending=True).tail(20)
     
     # Crear gráfico de barras horizontal
-    plt.figure(figsize=(14, 10))
+    plt.figure(figsize=(12, 7))
     
     bars = plt.barh(df_equipos['Equipo'], df_equipos['Puntos Totales'], color='#f97316', edgecolor='black', linewidth=0.7)
     
@@ -399,18 +401,18 @@ def generar_grafico_equipos(ano):
     for bar, color in zip(bars, colors):
         bar.set_color(color)
     
-    plt.xlabel('Puntos Totales Estimados', fontsize=12, fontweight='bold')
-    plt.title(f'Rendimiento Ofensivo por Equipo - Año {ano}', fontsize=14, fontweight='bold')
+    plt.xlabel('Puntos Totales Estimados', fontsize=11, fontweight='bold')
+    plt.title(f'Rendimiento Ofensivo por Equipo - Año {ano}', fontsize=12, fontweight='bold')
     plt.grid(axis='x', alpha=0.3)
     
     # Agregar valores en las barras
     for i, (equipo, puntos) in enumerate(zip(df_equipos['Equipo'], df_equipos['Puntos Totales'])):
-        plt.text(puntos + 50, i, f'{int(puntos)}', va='center', fontsize=9)
+        plt.text(puntos + 50, i, f'{int(puntos)}', va='center', fontsize=8)
     
     plt.tight_layout()
     
     # Guardar gráfico
-    ruta_grafico = 'src/static/img/barras_equipos.png'
+    ruta_grafico = 'src/templates/static/img/barras_equipos.png'
     os.makedirs(os.path.dirname(ruta_grafico), exist_ok=True)
     plt.savefig(ruta_grafico, dpi=100, bbox_inches='tight')
     plt.close()
