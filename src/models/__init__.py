@@ -1,3 +1,3 @@
-from .usuario import Usuario
+from .usuario import Usuario, EstadisticasPartido
 
-__all__ = ['Usuario']
+__all__ = ['Usuario', 'EstadisticasPartido']

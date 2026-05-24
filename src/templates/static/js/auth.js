@@ -159,6 +159,11 @@ function actualizarUIUsuario(usuario) {
     btnLogin.style.display = 'none';
     userMenu.style.display = 'flex';
     usuarioNombre.textContent = usuario.nombre;
+    
+    // Mostrar pestaña de estadísticas para usuario logueado
+    if (typeof verificarYMostrarPestanaEstadisticas === 'function') {
+        verificarYMostrarPestanaEstadisticas();
+    }
 }
 
 // Verificar si el usuario ya está autenticado al cargar la página

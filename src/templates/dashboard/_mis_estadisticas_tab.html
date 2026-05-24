@@ -1,0 +1,437 @@
+<div class="tab-pane fade" id="pestana-mis-estadisticas" role="tabpanel" aria-labelledby="pestana-mis-estadisticas-tab">
+    <div class="mis-estadisticas-container">
+        <!-- Sección de Cargar Nuevas Estadísticas -->
+        <div class="cargar-estadisticas-section">
+            <div class="section-header">
+                <h2><i class="fas fa-upload"></i> Cargar Estadísticas de Partido</h2>
+            </div>
+            
+            <form id="formCargarEstadisticas" class="estadisticas-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fechaPartido">
+                            <i class="fas fa-calendar"></i> Fecha del Partido
+                        </label>
+                        <input type="date" id="fechaPartido" name="fecha_partido" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rebotes">
+                            <i class="fas fa-arrow-up"></i> Rebotes
+                        </label>
+                        <input type="number" id="rebotes" name="rebotes" min="0" required placeholder="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="canastastairadas">
+                            <i class="fas fa-basketball"></i> Canastas Tiradas
+                        </label>
+                        <input type="number" id="canastastairadas" name="canastas_tiradas" min="0" required placeholder="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="canastasencestadas">
+                            <i class="fas fa-check"></i> Canastas Encestadas
+                        </label>
+                        <input type="number" id="canastasencestadas" name="canastas_encestadas" min="0" required placeholder="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="canastas3encestadas">
+                            <i class="fas fa-star"></i> Canastas de 3 Encestadas
+                        </label>
+                        <input type="number" id="canastas3encestadas" name="canastas_3_encestadas" min="0" required placeholder="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notas">
+                            <i class="fas fa-sticky-note"></i> Notas (Opcional)
+                        </label>
+                        <input type="text" id="notas" name="notas" placeholder="Ej: Excelente defensa">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-save"></i> Guardar Estadísticas
+                    </button>
+                    <button type="reset" class="btn-reset">
+                        <i class="fas fa-redo"></i> Limpiar Formulario
+                    </button>
+                </div>
+
+                <div id="formMessage" class="message-box" style="display: none;"></div>
+            </form>
+        </div>
+
+        <!-- Sección de Estadísticas Guardadas -->
+        <div class="estadisticas-guardadas-section">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Mis Estadísticas Guardadas</h2>
+                <button class="btn-refresh" onclick="cargarMisEstadisticas()" title="Actualizar">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+
+            <!-- Promedios -->
+            <div class="promedios-container" id="promediosContainer" style="display: none;">
+                <div class="promedio-card">
+                    <div class="promedio-icono"><i class="fas fa-arrow-up"></i></div>
+                    <div class="promedio-info">
+                        <span class="promedio-titulo">Promedio Rebotes</span>
+                        <span class="promedio-valor" id="promedioRebotes">0.00</span>
+                    </div>
+                </div>
+                <div class="promedio-card">
+                    <div class="promedio-icono"><i class="fas fa-check"></i></div>
+                    <div class="promedio-info">
+                        <span class="promedio-titulo">Promedio Canastas</span>
+                        <span class="promedio-valor" id="promedioCanastas">0.00</span>
+                    </div>
+                </div>
+                <div class="promedio-card">
+                    <div class="promedio-icono"><i class="fas fa-star"></i></div>
+                    <div class="promedio-info">
+                        <span class="promedio-titulo">Promedio Triples</span>
+                        <span class="promedio-valor" id="promedioTriples">0.00</span>
+                    </div>
+                </div>
+                <div class="promedio-card">
+                    <div class="promedio-icono"><i class="fas fa-percentage"></i></div>
+                    <div class="promedio-info">
+                        <span class="promedio-titulo">% Acierto</span>
+                        <span class="promedio-valor" id="porcentajeAcierto">0.00%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Estadísticas -->
+            <div class="estadisticas-tabla-container" id="estadisticasTablaContainer" style="display: none;">
+                <table class="estadisticas-tabla">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-calendar"></i> Fecha</th>
+                            <th><i class="fas fa-arrow-up"></i> Rebotes</th>
+                            <th><i class="fas fa-basketball"></i> Tiradas</th>
+                            <th><i class="fas fa-check"></i> Encestadas</th>
+                            <th><i class="fas fa-star"></i> Triples</th>
+                            <th>Notas</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="estadisticasTableBody">
+                        <tr class="loading-row">
+                            <td colspan="7" style="text-align: center; padding: 20px;">
+                                <i class="fas fa-spinner fa-spin"></i> Cargando...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mensaje de sin datos -->
+            <div class="sin-datos-container" id="sinDatosContainer" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <p>No tienes estadísticas guardadas aún</p>
+                <p style="font-size: 0.9em; color: #666;">Carga la primera estadística de tu partido usando el formulario arriba</p>
+            </div>
+
+            <!-- Paginación -->
+            <div class="paginacion-container" id="paginacionContainer" style="display: none;">
+                <button class="btn-paginacion" onclick="cargarPaginaEstadisticas(this.value - 1)" id="btnAnterior" style="display: none;">
+                    <i class="fas fa-chevron-left"></i> Anterior
+                </button>
+                <span class="paginacion-info" id="paginacionInfo"></span>
+                <button class="btn-paginacion" onclick="cargarPaginaEstadisticas(this.value + 1)" id="btnSiguiente" style="display: none;">
+                    Siguiente <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.mis-estadisticas-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cargar-estadisticas-section,
+.estadisticas-guardadas-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #333;
+}
+
+.btn-refresh {
+    background: none;
+    border: none;
+    color: #007bff;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.btn-refresh:hover {
+    transform: rotate(180deg);
+}
+
+.estadisticas-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95em;
+}
+
+.form-group input {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95em;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-submit,
+.btn-reset {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-submit {
+    background: #007bff;
+    color: white;
+}
+
+.btn-submit:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.btn-reset {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.btn-reset:hover {
+    background: #e0e0e0;
+}
+
+.message-box {
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.message-box.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message-box.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Promedios */
+.promedios-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.promedio-card {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    color: white;
+}
+
+.promedio-card:nth-child(2) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.promedio-card:nth-child(3) {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.promedio-card:nth-child(4) {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.promedio-icono {
+    font-size: 2em;
+    margin-right: 15px;
+    width: 60px;
+    text-align: center;
+}
+
+.promedio-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.promedio-titulo {
+    font-size: 0.85em;
+    opacity: 0.9;
+}
+
+.promedio-valor {
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+/* Tabla */
+.estadisticas-tabla-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.estadisticas-tabla {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.estadisticas-tabla thead {
+    background: #f8f9fa;
+}
+
+.estadisticas-tabla th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.estadisticas-tabla td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.estadisticas-tabla tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.btn-eliminar {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: background 0.3s ease;
+}
+
+.btn-eliminar:hover {
+    background: #c82333;
+}
+
+/* Sin datos */
+.sin-datos-container {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.sin-datos-container i {
+    font-size: 3em;
+    margin-bottom: 10px;
+    opacity: 0.5;
+}
+
+.sin-datos-container p {
+    margin: 10px 0;
+}
+
+/* Paginación */
+.paginacion-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-paginacion {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-paginacion:hover {
+    background: #0056b3;
+}
+
+.paginacion-info {
+    font-weight: 600;
+    color: #666;
+}
+</style>

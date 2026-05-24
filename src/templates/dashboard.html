@@ -12,7 +12,7 @@
     <h1>Dashboard de Estadisticas de Jugadores</h1>
 </div>
 
-<div class="filter-card">
+<div class="filter-card" id="filterCard">
     <label for="selectorAno" class="form-label">
         <i class="fas fa-calendar-alt me-2"></i>Filtrar por Ano/Temporada:
     </label>
@@ -40,6 +40,11 @@
             <i class="fas fa-chart-line"></i> Graficos
         </button>
     </li>
+    <li class="nav-item" role="presentation" id="pestana-mis-estadisticas-item" style="display: none;">
+        <button class="nav-link" id="pestana-mis-estadisticas-tab" data-bs-toggle="tab" data-bs-target="#pestana-mis-estadisticas" type="button" role="tab" aria-controls="pestana-mis-estadisticas" aria-selected="false">
+            <i class="fas fa-basketball"></i> Mis Estadísticas
+        </button>
+    </li>
 </ul>
 
 
@@ -47,6 +52,7 @@
     {% include "dashboard/_datos_tab.html" %}
     {% include "dashboard/_metricas_tab.html" %}
     {% include "dashboard/_graficos_tab.html" %}
+    {% include "dashboard/_mis_estadisticas_tab.html" %}
 </div>
 {% endblock %}
 
