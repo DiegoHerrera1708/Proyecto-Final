@@ -1,25 +1,28 @@
-# Proyecto Final - Gestion Deportiva NBA
+# Memoria Tecnica - Proyecto Final Gestion Deportiva
 
-Aplicacion web desarrollada con Flask para consultar estadisticas de jugadores de la NBA, visualizar metricas avanzadas y permitir que los usuarios registren sus propias estadisticas de partidos.
+## 1. Analisis del problema
 
-El proyecto incluye autenticacion de usuarios, endpoints API, analisis de datos con pandas, generacion de graficos y una base de modelos con herencia para representar personas, usuarios y jugadores.
+Esta aplicacion web permite consultar, analizar y visualizar estadisticas de jugadores de baloncesto de la NBA a partir de un dataset externo. El sistema tambien incluye un area de usuario donde cada persona puede registrarse, iniciar sesion y guardar sus propias estadisticas de partidos.
 
-## Funcionalidades principales
+La aplicacion va dirigida a:
 
-- Registro, login, logout y consulta del usuario autenticado.
-- Dashboard web con estadisticas de jugadores por temporada.
-- API para consultar jugadores paginados por ano.
-- API para calcular metricas avanzadas:
-  - porcentaje de tiro de campo,
-  - porcentaje de tiros de 2 puntos,
-  - puntos por partido estimados,
-  - volumen de tiro por partido.
-- Generacion de graficos con matplotlib, seaborn y plotly.
-- Registro privado de estadisticas personales de partidos.
+- Estudiantes que necesitan practicar desarrollo web con Python, Flask, bases de datos y tests.
+- Usuarios interesados en consultar estadisticas historicas de jugadores NBA.
+- Entrenadores, jugadores o aficionados que quieran guardar metricas personales de partidos.
+
+El problema principal que resuelve es organizar datos deportivos en bruto y convertirlos en informacion util mediante tablas, metricas avanzadas y graficos. Ademas, la autenticacion permite separar la informacion personal de cada usuario.
+
+### Funcionalidades principales
+
+- Registro e inicio de sesion de usuarios.
+- Dashboard con datos de jugadores NBA filtrados por temporada.
+- Consulta paginada de jugadores mediante API.
+- Calculo de metricas avanzadas de rendimiento.
+- Generacion de graficos de eficiencia y rendimiento.
+- Registro de estadisticas personales de partidos.
 - Tests automaticos con pytest.
-- Modelo `Jugador` con herencia desde una clase base `Persona`.
 
-## Tecnologias usadas
+### Tecnologias utilizadas
 
 - Python
 - Flask
@@ -31,6 +34,367 @@ El proyecto incluye autenticacion de usuarios, endpoints API, analisis de datos 
 - seaborn
 - plotly
 - pytest
+
+## 2. Arquitectura de clases - RA Modulo 3
+
+El proyecto utiliza una arquitectura sencilla basada en modelos SQLAlchemy. Se ha incorporado herencia para reutilizar atributos comunes entre clases.
+
+### Diagrama de clases UML
+
+```mermaid
+classDiagram
+    class Persona {
+        <<abstract>>
+        +Integer id
+        +String nombre
+        +DateTime fecha_creacion
+        +datos_basicos() dict
+    }
+
+    class Usuario {
+        +String email
+        +String password
+        +set_password(password)
+        +check_password(password) bool
+        +estadisticas
+    }
+
+    class Jugador {
+        +String equipo
+        +String posicion
+        +Integer dorsal
+        +Integer altura_cm
+        +Integer peso_kg
+        +to_dict() dict
+    }
+
+    class EstadisticasPartido {
+        +Integer id
+        +Integer usuario_id
+        +Integer rebotes
+        +Integer canastas_tiradas
+        +Integer canastas_encestadas
+        +Integer canastas_3_encestadas
+        +DateTime fecha_partido
+        +String notas
+        +DateTime fecha_creacion
+        +to_dict() dict
+    }
+
+    Persona <|-- Usuario
+    Persona <|-- Jugador
+    Usuario "1" --> "0..*" EstadisticasPartido
+```
+
+### Jerarquia de herencia
+
+La clase `Persona` esta definida como clase base abstracta en `src/models/persona.py`.
+
+Contiene atributos comunes:
+
+- `id`
+- `nombre`
+- `fecha_creacion`
+
+Tambien contiene el metodo:
+
+- `datos_basicos()`
+
+Las clases que heredan de `Persona` son:
+
+- `Usuario`: representa a un usuario registrado en la aplicacion.
+- `Jugador`: representa a un jugador deportivo con datos propios como equipo, posicion, dorsal, altura y peso.
+
+Esta herencia evita duplicar campos como `id`, `nombre` y `fecha_creacion` en diferentes modelos.
+
+### Clase Usuario
+
+`Usuario` hereda de:
+
+- `UserMixin`, para integrarse con Flask-Login.
+- `Persona`, para reutilizar los atributos comunes.
+
+Campos principales:
+
+- `email`
+- `password`
+
+Metodos principales:
+
+- `set_password(password)`: guarda la contrasena de forma segura usando hash.
+- `check_password(password)`: comprueba si la contrasena introducida coincide con el hash almacenado.
+
+### Clase Jugador
+
+`Jugador` hereda de `Persona`.
+
+Campos principales:
+
+- `equipo`
+- `posicion`
+- `dorsal`
+- `altura_cm`
+- `peso_kg`
+
+Metodo principal:
+
+- `to_dict()`: convierte el objeto en un diccionario para poder devolverlo como JSON o usarlo en vistas.
+
+### Uso de atributos privados y encapsulacion
+
+En Python, los atributos privados suelen indicarse mediante un guion bajo inicial. En este proyecto se usa esta convencion en el modulo `analytics.py` con la variable:
+
+```python
+_cache_datos_procesados = None
+```
+
+Esta variable actua como cache interna del modulo. No esta pensada para ser modificada directamente desde otras partes de la aplicacion. Su acceso se controla mediante la funcion:
+
+```python
+cargar_datos_procesados()
+```
+
+Tambien se aplica encapsulacion en el modelo `Usuario`. Aunque el campo `password` existe en la base de datos, la aplicacion no trabaja con la contrasena directamente. En su lugar utiliza:
+
+- `set_password(password)`, para guardar un hash.
+- `check_password(password)`, para validar el acceso.
+
+De esta forma se evita exponer la contrasena real y se centraliza la logica de seguridad dentro del propio modelo.
+
+## 3. Gestion de datos - RA Modulo 4
+
+### Origen del dataset
+
+El dataset principal se encuentra en:
+
+```text
+data/players_stats_by_season_full_details.csv
+```
+
+Contiene estadisticas historicas de jugadores por temporada. El proyecto utiliza principalmente columnas relacionadas con liga, temporada, jugador, equipo y estadisticas de tiro.
+
+Columnas usadas por la aplicacion:
+
+- `League`
+- `Season`
+- `Player`
+- `Team`
+- `GP`
+- `FGA`
+- `FGM`
+- `3PM`
+- `Stage`
+
+### Carga de datos
+
+La carga se realiza en `src/analytics.py` mediante pandas:
+
+```python
+df = pd.read_csv("data/players_stats_by_season_full_details.csv")
+```
+
+Despues se filtran los datos para quedarse con partidos de temporada regular y de la NBA:
+
+```python
+df = df[(df["Stage"] == "Regular_Season") & (df["League"] == "NBA")].copy()
+```
+
+### Tareas de limpieza realizadas
+
+Las principales tareas de limpieza y preparacion son:
+
+1. Filtrado de datos
+
+Se eliminan registros que no pertenecen a la NBA o que no son de temporada regular.
+
+2. Seleccion de columnas relevantes
+
+Se seleccionan solo las columnas necesarias para el dashboard:
+
+```python
+columnas_mostrar = ["League", "Season", "Player", "Team", "GP", "FGA", "FGM", "3PM"]
+```
+
+3. Manejo de valores nulos
+
+Los valores nulos se sustituyen por `0`:
+
+```python
+df_tabla = df_tabla.fillna(0)
+```
+
+Esto evita errores al calcular metricas o mostrar datos.
+
+4. Formateo y extraccion de fechas
+
+La columna `Season` tiene valores de tipo texto como:
+
+```text
+1999 - 2000
+```
+
+Para poder filtrar por ano, se extrae el primer ano con una expresion regular:
+
+```python
+df_tabla["Ano"] = df_tabla["Season"].str.extract(r"(\d{4})").astype(int)
+```
+
+5. Renombrado de columnas
+
+Las columnas originales se renombran para que sean mas comprensibles en la interfaz:
+
+```text
+League -> Liga
+Player -> Jugador
+Team -> Equipo
+GP -> Partidos Jugados
+FGA -> Canastas Tiradas
+FGM -> Encestadas
+3PM -> 3 Puntos
+```
+
+6. Conversion de columnas numericas
+
+Las columnas de estadisticas se convierten a valores numericos:
+
+```python
+pd.to_numeric(df_tabla[col], errors="coerce").fillna(0)
+```
+
+Esto permite calcular porcentajes, promedios y metricas avanzadas correctamente.
+
+7. Ordenacion de datos
+
+Los datos se ordenan por ano descendente para mostrar primero las temporadas mas recientes:
+
+```python
+df_tabla.sort_values(["Ano", "Liga"], ascending=[False, True])
+```
+
+### Metricas calculadas
+
+El modulo `analytics.py` calcula metricas avanzadas como:
+
+- `TC%`: porcentaje de tiro de campo.
+- `2P%`: porcentaje estimado de tiros de 2 puntos.
+- `PPP`: puntos por partido estimados.
+- `Volumen Tiro`: canastas tiradas por partido.
+
+Estas metricas ayudan a interpretar no solo cuantos tiros realiza un jugador, sino tambien su eficiencia.
+
+### Interpretacion de los graficos obtenidos
+
+El proyecto genera graficos para facilitar la interpretacion visual de los datos.
+
+#### Grafico de eficiencia de tiro
+
+Relaciona el volumen de tiro con el porcentaje de acierto.
+
+Interpretacion:
+
+- Jugadores con muchos tiros y alto porcentaje son perfiles ofensivos muy eficientes.
+- Jugadores con muchos tiros y bajo porcentaje tienen alto volumen, pero menor eficiencia.
+- Jugadores con pocos tiros y alto porcentaje suelen ser jugadores con seleccion de tiro mas limitada o especializada.
+
+#### Grafico de equipos
+
+Resume datos agrupados por equipo.
+
+Interpretacion:
+
+- Permite comparar el rendimiento colectivo de diferentes equipos.
+- Ayuda a identificar equipos con mayor volumen ofensivo.
+- Facilita ver diferencias entre equipos en una temporada concreta.
+
+#### Tabla de metricas avanzadas
+
+La tabla permite comparar jugadores de forma numerica.
+
+Interpretacion:
+
+- `TC%` alto indica buen porcentaje de acierto.
+- `PPP` alto indica mayor aportacion ofensiva estimada por partido.
+- `Volumen Tiro` alto indica mayor participacion ofensiva.
+
+## 4. Guia de instalacion - RA Modulo 1
+
+Esta guia permite replicar el entorno virtual y ejecutar el proyecto desde cero.
+
+### 1. Clonar o abrir el proyecto
+
+Situarse en la carpeta raiz:
+
+```powershell
+git clone https://github.com/DiegoHerrera1708/Proyecto-Final/
+```
+
+### 2. Crear el entorno virtual
+
+```powershell
+python -m venv .env
+```
+
+### 3. Activar el entorno virtual
+
+En PowerShell:
+
+```powershell
+.\.env\Scripts\Activate.ps1
+```
+
+Si PowerShell bloquea la activacion por politicas de ejecucion, se puede usar:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+Despues volver a activar el entorno:
+
+```powershell
+.\.env\Scripts\Activate.ps1
+```
+
+### 4. Actualizar pip
+
+```powershell
+python -m pip install --upgrade pip
+```
+
+### 5. Instalar dependencias
+
+```powershell
+pip install -r requirements.txt
+```
+
+### 6. Ejecutar la aplicacion
+
+```powershell
+python src\main.py
+```
+
+Abrir en el navegador:
+
+```text
+http://127.0.0.1:5000
+```
+
+Dashboard:
+
+```text
+http://127.0.0.1:5000/dashboard
+```
+
+### 7. Ejecutar los tests
+
+```powershell
+python -m pytest -q
+```
+
+Resultado esperado:
+
+```text
+9 passed
+```
 
 ## Estructura del proyecto
 
@@ -57,125 +421,6 @@ Proyecto-Final/
 |-- pytest.ini
 |-- requirements.txt
 `-- README.md
-```
-
-## Instalacion
-
-Desde la raiz del proyecto, crea y activa un entorno virtual:
-
-```powershell
-python -m venv .env
-.\.env\Scripts\Activate.ps1
-```
-
-Instala las dependencias:
-
-```powershell
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-## Ejecucion
-
-Ejecuta la aplicacion desde la raiz del proyecto:
-
-```powershell
-.\.env\Scripts\python.exe src\main.py
-```
-
-Despues abre en el navegador:
-
-```text
-http://127.0.0.1:5000
-```
-
-La ruta principal muestra la pagina inicial y el dashboard esta disponible en:
-
-```text
-http://127.0.0.1:5000/dashboard
-```
-
-## Base de datos
-
-La aplicacion usa SQLite mediante Flask-SQLAlchemy.
-
-Configuracion actual en `src/main.py`:
-
-```python
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///usuarios.db"
-```
-
-Las tablas se crean automaticamente al iniciar la aplicacion gracias a:
-
-```python
-with app.app_context():
-    db.create_all()
-```
-
-## Modelos
-
-### Persona
-
-Clase base abstracta definida en `src/models/persona.py`.
-
-Contiene campos comunes:
-
-- `id`
-- `nombre`
-- `fecha_creacion`
-
-Tambien incluye el metodo `datos_basicos()`.
-
-### Usuario
-
-Modelo definido en `src/models/usuario.py`.
-
-Hereda de:
-
-- `UserMixin`, para integrarse con Flask-Login.
-- `Persona`, para reutilizar los campos comunes.
-
-Campos propios:
-
-- `email`
-- `password`
-
-Metodos principales:
-
-- `set_password(password)`
-- `check_password(password)`
-
-### Jugador
-
-Modelo definido en `src/models/jugador.py`.
-
-Hereda de `Persona`.
-
-Campos propios:
-
-- `equipo`
-- `posicion`
-- `dorsal`
-- `altura_cm`
-- `peso_kg`
-
-Metodo principal:
-
-- `to_dict()`
-
-Ejemplo:
-
-```python
-from models import Jugador
-
-jugador = Jugador(
-    nombre="Pau Gasol",
-    equipo="Lakers",
-    posicion="Pivot",
-    dorsal=16,
-    altura_cm=213,
-    peso_kg=113,
-)
 ```
 
 ## Endpoints principales
@@ -251,59 +496,15 @@ El proyecto usa pytest. La configuracion esta en `pytest.ini`:
 pythonpath = src
 ```
 
-Esto permite importar modulos de `src` directamente desde los tests.
-
-Ejecutar todos los tests:
-
-```powershell
-.\.env\Scripts\python.exe -m pytest -q
-```
-
 Tests actuales:
 
 - `tests/test_login.py`: validacion basica del login.
 - `tests/test_modelos.py`: validacion de herencia entre `Persona`, `Usuario` y `Jugador`.
 
-## Dataset
-
-El dataset principal esta en:
-
-```text
-data/players_stats_by_season_full_details.csv
-```
-
-El modulo `src/analytics.py` carga este CSV, filtra datos de temporada regular de la NBA y prepara la informacion para el dashboard y la API.
-
 ## Notas de desarrollo
 
 - El proyecto debe ejecutarse desde la raiz para que las rutas relativas a `data/` funcionen correctamente.
-- Los graficos generados se guardan dentro de las carpetas estaticas del proyecto.
 - La base de datos SQLite se crea automaticamente si no existe.
-- Algunos tests pueden mostrar un warning relacionado con `datetime.utcnow()`. Es una advertencia de deprecacion, no un fallo de ejecucion.
-
-## Comandos utiles
-
-Activar entorno virtual:
-
-```powershell
-.\.env\Scripts\Activate.ps1
-```
-
-Ejecutar app:
-
-```powershell
-.\.env\Scripts\python.exe src\main.py
-```
-
-Ejecutar tests:
-
-```powershell
-.\.env\Scripts\python.exe -m pytest -q
-```
-
-Ejecutar solo tests de login:
-
-```powershell
-.\.env\Scripts\python.exe -m pytest -q tests\test_login.py
-```
+- Los graficos generados se guardan dentro de las carpetas static del proyecto.
+- Algunos tests pueden mostrar un warning relacionado con `datetime.utcnow()`. Es una advertencia de deprecacion, no un error.
 
